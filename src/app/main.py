@@ -38,10 +38,11 @@ def request_usercode_handler():
 
 st.subheader("Gerador de Tokens do :red[IFood]")
 st.button(":label: Gerar Código", on_click=request_usercode_handler)
-st.text("Codigo de vinculação")
-st.code(state.usercode["userCode"] if state.usercode else "")
-st.text("URL de vinculação")
-st.code(state.usercode["verificationUrlComplete"] if state.usercode else "")
+c1, c2 = st.columns([.3, .7])
+c1.text("Codigo de vinculação")
+c1.code(state.usercode["userCode"] if state.usercode else "")
+c2.text("URL de vinculação")
+c2.code(state.usercode["verificationUrlComplete"] if state.usercode else "")
 verification_code_input = st.text_input(
     label="Código de verificação", disabled=(not state.usercode)
 )
