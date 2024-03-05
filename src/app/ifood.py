@@ -1,4 +1,5 @@
 from typing import Callable, TypeAlias, TypedDict
+
 import requests as rq
 import settings
 
