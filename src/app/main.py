@@ -10,6 +10,7 @@ class State:
     usercode: ifood.UserCodeResponse
     authorizer: ifood.AuthorizerFunction
     token: ifood.TokenResponse
+    merchant: ifood.MerchantResponse
 
     def __getattribute__(self, __name: str) -> Any:
         return st.session_state.get(__name)
@@ -49,6 +50,7 @@ verification_code_input = st.text_input(
 def authorizer_handler():
     try:
         state.token = state.authorizer(verification_code_input.strip())
+        state.merchant = ifood.get_merchants(state.token)[0]
     except Exception as error:
         st.error(repr(error))
     else:
@@ -59,10 +61,12 @@ c1, c2 = st.columns([0.2, 0.8])
 c1.button(
     ":key: Autorizar", on_click=authorizer_handler, disabled=(state.usercode is None)
 )
-c2.download_button(
-    ":admission_tickets: Baixar Token",
-    json.dumps(state.token, indent=4),
-    file_name="token.ifood.json",
-    disabled=(state.token is None),
-    type="primary",
-)
+
+if state.token and state.merchant:
+    c2.download_button(
+        ":admission_tickets: Baixar Token",
+        json.dumps(state.token, indent=4),
+        file_name=f"{state.merchant['name']}.token.ifood.json",
+        disabled=(state.token is None),
+        type="primary",
+    )
